@@ -125,8 +125,18 @@ class CollectionStream(Stream):
 
     def get_records(self, context: dict | None) -> Iterable[dict]:
         bookmark = self.get_starting_replication_key_value(context)
+
+        original_bookmark = bookmark
+        if bookmark and isinstance(bookmark, str):
+            try:
+                bookmark = datetime.fromisoformat(bookmark)
+            except ValueError:
+                bookmark = original_bookmark
+
         for record in self._collection.find(
             {self.replication_key: {"$gt": bookmark}} if bookmark else {}
+        ).sort.(
+            {self.replication_key: 1}
         ):
             if self._strategy == "envelope":
                 # Return the record wrapped in a document key
