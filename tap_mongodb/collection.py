@@ -10,6 +10,7 @@ import singer_sdk._singerlib as singer
 import singer_sdk.helpers._flattening
 from bson.objectid import ObjectId
 from bson.timestamp import Timestamp
+from datetime import datetime
 from pymongo.collection import Collection
 from singer_sdk import Stream
 from singer_sdk.helpers._state import increment_state
