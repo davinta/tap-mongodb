@@ -136,7 +136,7 @@ class CollectionStream(Stream):
 
         for record in self._collection.find(
             {self.replication_key: {"$gt": bookmark}} if bookmark else {}
-        ).sort.(
+        ).sort(
             {self.replication_key: 1}
         ):
             if self._strategy == "envelope":
