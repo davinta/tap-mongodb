@@ -139,6 +139,9 @@ class CollectionStream(Stream):
         ).sort(
             {self.replication_key: 1}
         ):
+
+            if self._collection.name == "customers":
+                record.pop("identifiers", None)
             if self._strategy == "envelope":
                 # Return the record wrapped in a document key
                 yield {"_id": record["_id"], "document": record}
