@@ -140,8 +140,10 @@ class CollectionStream(Stream):
             {self.replication_key: 1}
         ):
 
-           if self._collection.name in ["customers", "prospect"]:
-                record.pop("identifiers", None)
+            if self._collection.name in ["customers", "prospect"]:
+                identifiers=record.get("identifiers",[])
+			    for identifier in identifiers:
+				    record.pop("identifierNumberEnc", None)
             if self._strategy == "envelope":
                 # Return the record wrapped in a document key
                 yield {"_id": record["_id"], "document": record}
