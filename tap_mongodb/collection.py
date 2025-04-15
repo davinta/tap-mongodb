@@ -140,11 +140,18 @@ class CollectionStream(Stream):
             {self.replication_key: 1}
         ):
 
-            if self._collection.name in ["customers", "prospects"]:
+            if self._collection.name in ["customers", "prospect"]:
                 identifiers = record.get("identifiers", [])
                 for identifier in identifiers:
                     identifier.pop("identifierNumberEnc", None)
-            
+                addendum = record.get("individualAddendum")
+                if addendum:
+                    family_members = addendum.get("familyMembers", [])
+                    for fam_member in family_members:
+                        fam_identifiers = fam_member.get("identifiers", [])
+                        for fam_identifier in fam_identifiers:
+                            fam_identifier.pop("identifierNumberEnc", None)
+           
             if self._strategy == "envelope":
                 # Return the record wrapped in a document key
                 yield {"_id": record["_id"], "document": record}
