@@ -134,12 +134,14 @@ class CollectionStream(Stream):
             except ValueError:
                 bookmark = original_bookmark
 
-        for record in self._collection.find(
-            {self.replication_key: {"$gt": bookmark}} if bookmark else {}
-        ).sort(
-            {self.replication_key: 1}
-        ):
-
+        query = {self.replication_key: {"$gt": bookmark}} if bookmark else {}
+        pipeline = [
+            {"$match": query},
+            {"$sort": {self.replication_key: 1}}
+        ]
+        cursor = self._collection.aggregate(pipeline, allowDiskUse=True)
+        
+        for record in cursor:
             if self._collection.name in ["customers", "prospect"]:
                 identifiers = record.get("identifiers", [])
                 for identifier in identifiers:
